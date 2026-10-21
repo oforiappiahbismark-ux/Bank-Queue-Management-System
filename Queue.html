@@ -1,0 +1,505 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Queue Management System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        header {
+            background: #123b67;
+            color: white;
+            padding: 22px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        header h1 {
+            font-size: 23px;
+        }
+
+        header p {
+            font-size: 13px;
+            margin-top: 5px;
+            color: #cbd5e1;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1150px;
+            margin: 30px auto;
+        }
+
+        .welcome {
+            margin-bottom: 25px;
+        }
+
+        .welcome h2 {
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: #64748b;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #0000000a;
+        }
+
+        .card p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .card h2 {
+            margin-top: 12px;
+            font-size: 32px;
+            color: #123b67;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .panel {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #0000000a;
+        }
+
+        .panel h3 {
+            margin-bottom: 20px;
+            font-size: 19px;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 7px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        input:focus, select:focus {
+            border-color: #2563eb;
+        }
+
+        button {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.88;
+        }
+
+        .add-btn {
+            background: #123b67;
+            color: white;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .serve-btn {
+            background: #15803d;
+            color: white;
+        }
+
+        .clear-btn {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .queue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .queue-header h3 {
+            margin: 0;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .customer {
+            border: 1px solid #e2e8f0;
+            border-radius: 9px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .customer h4 {
+            margin-bottom: 6px;
+        }
+
+        .customer p {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .ticket {
+            display: inline-block;
+            padding: 5px 9px;
+            background: #dbeafe;
+            color: #1d4ed8;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .status {
+            background: #dcfce7;
+            color: #166534;
+            padding: 5px 8px;
+            border-radius: 5px;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 45px 10px;
+            color: #94a3b8;
+        }
+
+        .empty div {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .current {
+            background: #eaf2ff;
+            border-left: 5px solid #2563eb;
+            padding: 18px;
+            border-radius: 8px;
+            margin-bottom: 22px;
+        }
+
+        .current p {
+            color: #475569;
+            margin-top: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        @media (max-width: 800px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 19px;
+            }
+
+            .container {
+                width: 94%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div>
+        <h1>🏦 FirstTrust Bank</h1>
+        <p>Customer Queue Management System</p>
+    </div>
+    <div id="clock"></div>
+</header>
+
+<div class="container">
+
+    <section class="welcome">
+        <h2>Bank Dashboard</h2>
+        <p>Manage customer waiting lines and serve customers efficiently.</p>
+    </section>
+
+    <section class="stats">
+        <div class="card">
+            <p>Customers Waiting</p>
+            <h2 id="waitingCount">0</h2>
+        </div>
+
+        <div class="card">
+            <p>Customers Served</p>
+            <h2 id="servedCount">0</h2>
+        </div>
+
+        <div class="card">
+            <p>Next Ticket Number</p>
+            <h2 id="nextTicket">001</h2>
+        </div>
+    </section>
+
+    <section class="main-content">
+
+        <div class="panel">
+            <h3>Register a Customer</h3>
+
+            <form id="customerForm">
+                <label for="customerName">Customer Name</label>
+                <input
+                    type="text"
+                    id="customerName"
+                    placeholder="Enter customer's name"
+                    required
+                >
+
+                <label for="serviceType">Service Required</label>
+                <select id="serviceType" required>
+                    <option value="Cash Deposit">Cash Deposit</option>
+                    <option value="Cash Withdrawal">Cash Withdrawal</option>
+                    <option value="Account Opening">Account Opening</option>
+                    <option value="Money Transfer">Money Transfer</option>
+                    <option value="Customer Support">Customer Support</option>
+                </select>
+
+                <button type="submit" class="add-btn">
+                    + Add to Queue
+                </button>
+            </form>
+        </div>
+
+        <div class="panel">
+            <div class="queue-header">
+                <h3>Customer Queue</h3>
+
+                <div class="actions">
+                    <button class="serve-btn" onclick="serveCustomer()">
+                        Serve Next
+                    </button>
+
+                    <button class="clear-btn" onclick="clearQueue()">
+                        Clear
+                    </button>
+                </div>
+            </div>
+
+            <div class="current" id="currentCustomer">
+                <strong>Now Serving</strong>
+                <p>No customer is currently being served.</p>
+            </div>
+
+            <div id="queueList"></div>
+        </div>
+
+    </section>
+</div>
+
+<footer>
+    FirstTrust Bank Queue Management System | Student Project
+</footer>
+
+<script>
+    // The queue follows the FIFO principle.
+    // The first customer added will be the first customer served.
+
+    let customerQueue = [];
+    let servedCount = 0;
+    let ticketNumber = 1;
+
+    const customerForm = document.getElementById("customerForm");
+    const queueList = document.getElementById("queueList");
+
+    customerForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const name = document.getElementById("customerName").value.trim();
+        const service = document.getElementById("serviceType").value;
+
+        if (name === "") {
+            alert("Please enter the customer's name.");
+            return;
+        }
+
+        const customer = {
+            name: name,
+            service: service,
+            ticket: ticketNumber++
+        };
+
+        customerQueue.push(customer);
+
+        customerForm.reset();
+
+        updateDashboard();
+    });
+
+    function serveCustomer() {
+        if (customerQueue.length === 0) {
+            alert("There are no customers waiting.");
+            return;
+        }
+
+        // Remove the first customer in the queue.
+        const customer = customerQueue.shift();
+
+        servedCount++;
+
+        document.getElementById("currentCustomer").innerHTML = `
+            <strong>Now Serving: Ticket #${formatTicket(customer.ticket)}</strong>
+            <p><b>Name:</b> ${escapeHTML(customer.name)}</p>
+            <p><b>Service:</b> ${escapeHTML(customer.service)}</p>
+        `;
+
+        updateDashboard();
+    }
+
+    function updateDashboard() {
+        document.getElementById("waitingCount").textContent =
+            customerQueue.length;
+
+        document.getElementById("servedCount").textContent =
+            servedCount;
+
+        document.getElementById("nextTicket").textContent =
+            formatTicket(ticketNumber);
+
+        displayQueue();
+    }
+
+    function displayQueue() {
+        queueList.innerHTML = "";
+
+        if (customerQueue.length === 0) {
+            queueList.innerHTML = `
+                <div class="empty">
+                    <div>👥</div>
+                    <h4>No customers waiting</h4>
+                    <p>Newly registered customers will appear here.</p>
+                </div>
+            `;
+            return;
+        }
+
+        customerQueue.forEach(function(customer, index) {
+            const customerCard = document.createElement("div");
+            customerCard.className = "customer";
+
+            customerCard.innerHTML = `
+                <div>
+                    <span class="ticket">
+                        Ticket #${formatTicket(customer.ticket)}
+                    </span>
+                    <h4>${escapeHTML(customer.name)}</h4>
+                    <p>${escapeHTML(customer.service)}</p>
+                    <p>Position in queue: ${index + 1}</p>
+                </div>
+
+                <span class="status">Waiting</span>
+            `;
+
+            queueList.appendChild(customerCard);
+        });
+    }
+
+    function clearQueue() {
+        if (customerQueue.length === 0) {
+            alert("The queue is already empty.");
+            return;
+        }
+
+        const confirmed = confirm(
+            "Are you sure you want to remove all waiting customers?"
+        );
+
+        if (confirmed) {
+            customerQueue = [];
+            updateDashboard();
+        }
+    }
+
+    function formatTicket(number) {
+        return String(number).padStart(3, "0");
+    }
+
+    function escapeHTML(value) {
+        return value.replace(/[&<>"']/g, function(character) {
+            const characters = {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;"
+            };
+
+            return characters[character];
+        });
+    }
+
+    function updateClock() {
+        document.getElementById("clock").textContent =
+            new Date().toLocaleString();
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    updateDashboard();
+</script>
+
+</body>
+</html>
+```
